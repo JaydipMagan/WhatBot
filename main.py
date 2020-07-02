@@ -1,8 +1,19 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from os import path
 from os import getcwd
 from getpass import getuser
 import time
+
+
+def read_msg(group_name):
+    group = chrome.find_element_by_xpath('//span[@title="{}"]'.format(group_name))
+    group.click()
+
+    msgs_in = chrome.find_elements(By.CLASS_NAME,"message-in")
+    for msg in msgs_in:
+        msg_span = msg.find_element(By.CLASS_NAME,"eRacY")
+        print(msg_span.text)
 
 def send_msg(message,group_name):
     group = chrome.find_element_by_xpath('//span[@title="{}"]'.format(group_name))
@@ -37,7 +48,8 @@ if __name__ == "__main__":
 
     stop = False
     while not stop:
-        send_msg(input("message?"),"Testing")
+        # send_msg(input("message?"),"Gaming")
+        read_msg("Testing")
         if input("stop?")=="y":
             stop = True
 
