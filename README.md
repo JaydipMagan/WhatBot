@@ -23,6 +23,23 @@ Extract the driver into this directory.
 
 To install Selenium `pip3 install selenium`
 
+# How to run
+
+You must have chromedriver in the same directory as main.py.
+
+To run the bot give the name of the group chat and 0 or 1 if you want to use cache. Cache will just try use the existing user profile
+on chrome so you don't have to keep scanning the QR code.
+
+`python main.py name="group_name" cache=0" 
+
+# Current features 
+* @all - will send a @ to every member of the group chat
+
+# Upcoming features 
+* request meme from reddit - will go to a subreddit and download a meme
+* create a meme - will allow you to make a meme using templates
+* help command - will show the commands available
+
 # Future work
 
 Developing a bot which runs on android
