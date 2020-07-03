@@ -1,19 +1,32 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from os import path
 from os import getcwd
 from getpass import getuser
 import time
 
+# find the total number of members in the group
+def find_total_memebers():
+    group_header = chrome.find_element_by_xpath('//*[@id="main"]/header')
+    group_header.click()
+    close_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[3]/span/div/span/div/header/div/div[1]/button')
+    time.sleep(0.5)
+    total = chrome.find_element_by_css_selector('#app > div > div > div.YD4Yw > div._1-iDe._14VS3 > span > div > span > div > div > div._1TM40 > div:nth-child(5) > div._1Gecv > div > div > div._3HPyS._1e77x')
+    close_button.click()
+    return total.text
+
 # @ everyone in the group chat
 def at_all():
     type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
-    names = get_names()
-    for name in names:
-        type_field.send_keys("@"+name)
-        type_field.send_keys(Keys.TAB)
-        type_field.send_keys(Keys.ENTER)
+    actions = ActionChains(chrome) 
+    for i in range(total_members-1):
+        actions.send_keys("@")
+        actions.send_keys(Keys.ARROW_DOWN*i)
+        actions.send_keys(Keys.TAB)
+    actions.perform()
+    type_field.send_keys(Keys.ENTER)
 
 #Get all the participants name
 def get_names():
@@ -48,6 +61,7 @@ def read_latest_msg(group_name):
     if msg_span.text[:3]=="@JD":
         print("bot called")
     if msg_span.text[:4]=="@all":
+        print("detected")
         at_all()
 
 def read_msgs(group_name):
@@ -89,9 +103,11 @@ if __name__ == "__main__":
     print("press ENTER once whatsapp has loaded.")
     input("")
 
-    stop = False
+    open_chat("Preets mango lassis")
+    total_members = int(find_total_memebers().rstrip(" participants"))
+    print(total_members)
+    stop = False    
     while not stop:
-        # send_msg(input("message?"),"Testing")
         read_latest_msg("Preets mango lassis")
         if input("stop?")=="y":
             stop = True
