@@ -54,24 +54,22 @@ def open_chat(name):
     chat.click()
 
 def read_latest_msg(group_name):
-    open_chat(group_name)
-
     msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
     msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
+    msg_hash = hash(msg_span.text)
     if msg_span.text[:3]=="@JD":
         print("bot called")
-    if msg_span.text[:4]=="@all":
+    if msg_span.text=="@all" and prev_msg!=msg_hash:
         print("detected")
         at_all()
-
+    return msg_hash
 def read_msgs(group_name):
     open_chat(group_name)
 
     msgs_in = chrome.find_elements(By.CLASS_NAME,"message-in")
     for msg in msgs_in:
         msg_span = msg.find_element(By.CLASS_NAME,"eRacY")
-        if msg_span.text[:3]=="@JD":
-            print("bot called")
+
 
 def send_msg(message,group_name):
     open_chat(group_name)
@@ -107,9 +105,8 @@ if __name__ == "__main__":
     total_members = int(find_total_memebers().rstrip(" participants"))
     print(total_members)
     stop = False    
+    prev_msg = 0
     while not stop:
-        read_latest_msg("Preets mango lassis")
-        if input("stop?")=="y":
-            stop = True
-
+        msg = read_latest_msg("Preets mango lassis")
+        prev_msg = msg
     chrome.close()
