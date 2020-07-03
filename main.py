@@ -6,7 +6,15 @@ from getpass import getuser
 import time
 
 
-def read_msg(group_name):
+def read_latest_msg(group_name):
+    group = chrome.find_element_by_xpath('//span[@title="{}"]'.format(group_name))
+    group.click()
+
+    msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
+    msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
+    print(msg_span.text)
+
+def read_msgs(group_name):
     group = chrome.find_element_by_xpath('//span[@title="{}"]'.format(group_name))
     group.click()
 
@@ -48,8 +56,8 @@ if __name__ == "__main__":
 
     stop = False
     while not stop:
-        # send_msg(input("message?"),"Gaming")
-        read_msg("Testing")
+        # send_msg(input("message?"),"Testing")
+        read_latest_msg("Testing")
         if input("stop?")=="y":
             stop = True
 
