@@ -30,7 +30,7 @@ You must have chromedriver in the same directory as main.py.
 To run the bot give the name of the group chat and 0 or 1 if you want to use cache. Cache will just try use the existing user profile
 on chrome so you don't have to keep scanning the QR code.
 
-`python main.py name="group_name" cache=0" 
+`python main.py name="group_name" cache=0"`
 
 # Current features 
 * @all - will send a @ to every member of the group chat
