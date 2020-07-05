@@ -2,6 +2,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 import time
+from selenium.webdriver import chrome
+from parser import parser
+
 class group:
     def __init__(self,name,chrome):
         print("Creating group object")
@@ -15,6 +18,9 @@ class group:
         self.size = self.find_size(chrome)
         self.prev_msg = 0
         close_button.click()
+
+        # Create a parser object
+        self.parser  = parser()
     
     # find the date and time the group chat was created
     def find_birth(self,chrome):
@@ -69,6 +75,7 @@ class group:
             msg_hash = hash(msg_span.text)
             if msg_span.text[:3]=="@JD":
                 print("bot called")
+                self.parser.parse(msg_span.text)
             if msg_span.text=="@all" and self.prev_msg!=msg_hash:
                 print("detected")
                 self.at_all(chrome)
