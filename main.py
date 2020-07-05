@@ -8,6 +8,7 @@ from getpass import getuser
 from group import group
 import time
 import sys
+import argparse
 
 #Uses the search bar to find and open chat
 def open_chat(name):
@@ -40,7 +41,16 @@ def send_msg(message,group_name):
     send_button = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[3]/button')
     send_button.click()
 
+def setup_args_parser(parser):
+    parser.add_argument("name",type=str,help="The name of the group chat the bot will run on")
+    parser.add_argument("-c","--cache",action="store_true",help = "Use browser cache to stop having to scan QR code more than once")
+    return parser
+
 if __name__ == "__main__":
+    arg_parser = argparse.ArgumentParser()
+    arg_parser = setup_args_parser(arg_parser)
+    args = arg_parser.parse_args()
+    
     # construct paths 
     user = getuser()
     local_path = path.abspath(getcwd())
@@ -49,12 +59,9 @@ if __name__ == "__main__":
     chrome_profile_mac = '/Users/{}/Library/Application Support/Google/Chrome/Default'.format(user)
     # chrome_profile_win = 'C:\Users\{}\AppData\Local\Google\Chrome\User Data\Default'.format(user)
 
-    if len(sys.argv)!=3:
-        print("Not enough arguments given. python main.py name='group name' cache=0/1")
-
     # Set options and use cache of the chrome browser
-    if sys.argv[2]=="cache=1":
-        options = webdriver.ChromeOptions()
+    options = webdriver.ChromeOptions()
+    if args.cache:
         options.add_argument('--user-data-dir='+chrome_profile_linux)
         options.add_argument('--profile-directory=Default')
 
@@ -65,7 +72,7 @@ if __name__ == "__main__":
     print("press ENTER once whatsapp has loaded.")
     input("")
 
-    group_name = sys.argv[1].lstrip("name=")
+    group_name = args.name
     open_chat(group_name)
     group = group(group_name,chrome)
     print(group.name,group.birth,group.desc,group.size)

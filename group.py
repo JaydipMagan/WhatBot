@@ -75,7 +75,12 @@ class group:
             msg_hash = hash(msg_span.text)
             if msg_span.text[:3]=="@JD":
                 print("bot called")
-                self.parser.parse(msg_span.text)
+                try:
+                    self.parser.parse(msg_span.text)
+                except SyntaxError as e:
+                    print(e)
+                    send_msg(e,chrome)
+
             if msg_span.text=="@all" and self.prev_msg!=msg_hash:
                 print("detected")
                 self.at_all(chrome)
