@@ -2,35 +2,39 @@
 Whatsapp bot for group chats. It uses web scraping to send messages to group chats.
 
 # Dependencies 
-## Python 3 
-Use latest version of Python3
 
-## Pip3 
-Must have the lastest version of pip to install the python packages
-
+Package dependencies can be found in the `requirements.txt` file.
 ## Chrome
 Please use chrome as it is the most supported by Selenium. Will switch to FireFox ASAP.
 
 To find out what version of Chrome you have
-enter this in url search field `chrome://settings/help`
+enter this in url search field : `chrome://settings/help`
 
 Use this link to download the corresponding drivers :
 `https://sites.google.com/a/chromium.org/chromedriver/downloads`
 
 Extract the driver into this directory.
 
-## Selenium
-
-To install Selenium `pip3 install selenium`
-
 # How to run
+
+Please create a virtual enviroment : 
+`python3 -m venv whatbot_env`
+
+Activate the virtual enviroment :
+`source whatbot_env/bin/activate`
 
 You must have chromedriver in the same directory as main.py.
 
-To run the bot give the name of the group chat and 0 or 1 if you want to use cache. Cache will just try use the existing user profile
-on chrome so you don't have to keep scanning the QR code.
+Install the python packages using the requirements file:
+`pip3 install -r requirements.txt`
 
-`python main.py name="group name" -c`
+To run the bot give the name of the group chat the --cache flag. Cache will just 
+try use the existing user profile on chrome so you don't have to keep scanning the QR code.
+Example :
+`python3 main.py name="group name" -c`
+
+Deactivate the virtual enviroment after running bot just run :
+`deactivate`
 
 # Current features 
 * @all - will send a @ to every member of the group chat
