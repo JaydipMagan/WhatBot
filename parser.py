@@ -35,4 +35,6 @@ class parser:
         if args[0] not in self.vaild_command_names:
             raise SyntaxError(args[0]+" is not a valid command. Use help to find out the valid commands.")
         else:
-            obj = self.commands[args[0]]
+            obj = self.commands[args[0]]()
+            cmd = " ".join(args[1:])
+            return obj.parse_args(cmd)

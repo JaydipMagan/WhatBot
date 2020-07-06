@@ -1,9 +1,10 @@
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-import time
 from selenium.webdriver import chrome
 from parser import parser
+import time
+import os
 
 class group:
     def __init__(self,name,chrome):
@@ -68,18 +69,37 @@ class group:
             msg_span = msg.find_element(By.CLASS_NAME,"eRacY")
             print(msg_span.text)
 
+    def send_img(self,image_path,chrome):
+        attach = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div')
+        attach.click()
+
+        img_button = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/span/div/div/ul/li[1]/button/input')
+        img_button.send_keys(os.path.abspath(image_path))
+        
+        time.sleep(1)
+        send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
+        send_button.click()
+        
     # read latest message of the current chat
     def read_latest_msg(self,chrome):
             msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
             msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
             msg_hash = hash(msg_span.text)
-            if msg_span.text[:3]=="@JD":
+            if msg_span.text[:3]=="@JD" and self.prev_msg!=msg_hash:
                 print("bot called")
-                try:
-                    self.parser.parse(msg_span.text)
-                except SyntaxError as e:
-                    print(e)
-                    send_msg(e,chrome)
+                cmd = msg_span.text.split()
+                final_cmd = " ".join(cmd[1:])
+                print(final_cmd)
+                if len(cmd)>1:
+                    try:
+                        action, content = self.parser.parse(final_cmd)
+                        if action=="text" or action=="error":
+                            self.send_msg(content,chrome)
+                        elif action=="image":
+                            self.send_img(content,chrome)
+                    except SyntaxError as e:
+                        print(e)
+                        self.send_msg(e,chrome)
 
             if msg_span.text=="@all" and self.prev_msg!=msg_hash:
                 print("detected")

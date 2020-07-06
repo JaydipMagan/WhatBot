@@ -1,11 +1,14 @@
 import configparser
-import argparse
+import ArgumentParser
 import requests
 import praw 
 import re
 import os
+    
 class meme:
     def __init__(self):
+        self.help_message = "@JD meme [-s subreddit name] [-t time frame {h,d,w,m,a}] - Returns a meme from Reddit. If no subreddit given default is /memes"
+        self.usage_message = "Incorrect usage. Try follow : meme [-s subreddit name] [-t time frame {h,d,w,m,a}]"
         config = configparser.ConfigParser()
         config.read("conf.ini")
         self.reddit = praw.Reddit(client_id=config['REDDIT']['client_id'],
@@ -17,28 +20,33 @@ class meme:
                           'm': "month",
                           'y': "year",
                           'a': "all"}
+        self.sub = "memes"
+        self.time = "h"
+        self.amount = 1
+        self.images_path = 1
         
-        
-    def parse(self,string):
-        parser = argparse.ArgumentParser()
+    def parse_args(self,string):
+        print("got ",string)
+        parser = ArgumentParser.ArgumentParser()
         req_args = parser.add_argument_group("required arguments")
         req_args.add_argument('-s',"--subreddit",type=str,help="The subreddit you want to download the image from",required=True)
-        req_args.add_argument('-a',"--amount",type=int,help="The amount of images you want to download",required=True)
+        req_args.add_argument('-a',"--amount",type=int,help="The amount of images you want to download",required=False,default=1)
         req_args.add_argument('-t',"--time",type=str,help="Time frame  ",choices=["h","d","w","m","y"], required=True)
         
         try:
             args = parser.parse_args(string.split())
-            self.sub = args.subreddit
-            self.amount = args.amount
-            self.time = args.time
-            self.images_path = f'images/{self.sub}/'
-            return self.start()
-        except Exception as e:
-            return e
+        except SystemExit as e:
+            print(e)
+            return ("error",self.usage_message)
+        
+        self.sub = args.subreddit
+        self.amount = args.amount
+        self.time = args.time
+        self.images_path = f'images/{self.sub}/'
+        return self.start()
     
     def help(self):
-        message = "@JD meme [subreddit name] [time frame {h,d,w,m,a}] - Returns a meme from Reddit. If no subreddit given default is /memes"
-        return message
+        return self.message
 
     def download_images(self,images):
         for image in images:
@@ -65,11 +73,13 @@ class meme:
                         if count>=self.amount:
                             break
                     else:
-                        return "image exists"
+                        return ("image",fname)
             if len(images):
                 if not os.path.exists(self.images_path):
                     os.makedirs(self.images_path)
                 self.download_images(images)
+                return ("image",fname)
                     
         except Exception as e:
-            print("download failed",e)
+            print(e)
+            return ("error",e)
