@@ -1,3 +1,5 @@
 chromedriver
 __pycache__/
 whatbot_env
+conf.ini
+images/
