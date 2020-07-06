@@ -28,6 +28,8 @@ You must have chromedriver in the same directory as main.py.
 Install the python packages using the requirements file:
 `pip3 install -r requirements.txt`
 
+Please put your reddit app client id and client secret in the `conf.ini` file.
+
 To run the bot give the name of the group chat the --cache flag. Cache will just 
 try use the existing user profile on chrome so you don't have to keep scanning the QR code.
 Example :
