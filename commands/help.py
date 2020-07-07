@@ -14,6 +14,6 @@ class help:
         return message
     def parse_args(self,string,commands,names):
         if string=="":
-            return self.generate_help_message(commands,names)
+            return ("text",self.generate_help_message(commands,names))
         else:
             return ("error","Incorrect usage. Just try help.")
