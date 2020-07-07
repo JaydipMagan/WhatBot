@@ -39,12 +39,12 @@ Deactivate the virtual enviroment after running bot just run :
 `deactivate`
 
 # Current features 
+* help command - will show the commands available
 * @all - will send a @ to every member of the group chat
+* request meme from reddit - will go to a subreddit and download a meme
 
 # Upcoming features 
-* request meme from reddit - will go to a subreddit and download a meme
 * create a meme - will allow you to make a meme using templates
-* help command - will show the commands available
 
 # Future work
 
