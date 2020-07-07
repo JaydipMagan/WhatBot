@@ -7,8 +7,10 @@ import os
     
 class meme:
     def __init__(self):
-        self.help_message = "@JD meme [-s subreddit name] [-t time frame {h,d,w,m,a}] - Returns a meme from Reddit. If no subreddit given default is /memes"
+        self.help_message = "meme - Returns a meme from Reddit."
         self.usage_message = "Incorrect usage. Try follow : meme [-s subreddit name] [-t time frame {h,d,w,m,a}]"
+        self.name = "meme"
+        
         config = configparser.ConfigParser()
         config.read("conf.ini")
         self.reddit = praw.Reddit(client_id=config['REDDIT']['client_id'],
@@ -45,8 +47,8 @@ class meme:
         self.images_path = f'images/{self.sub}/'
         return self.start()
     
-    def help(self):
-        return self.message
+    def help_message(self):
+        return self.help_message
 
     def download_images(self,images):
         for image in images:

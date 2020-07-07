@@ -11,7 +11,7 @@ class parser:
     def get_commands(self):
         commands = {}
         for x in self.vaild_command_names:
-            obj = self.get_class("commands",x)
+            obj = self.get_class("commands",x)()
             commands[x] = obj
         return commands
 
@@ -35,6 +35,8 @@ class parser:
         if args[0] not in self.vaild_command_names:
             raise SyntaxError(args[0]+" is not a valid command. Use help to find out the valid commands.")
         else:
-            obj = self.commands[args[0]]()
+            obj = self.commands[args[0]]
             cmd = " ".join(args[1:])
+            if args[0]=="help":
+                return obj.parse_args(cmd,self.commands,self.vaild_command_names)
             return obj.parse_args(cmd)

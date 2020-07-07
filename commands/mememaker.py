@@ -1,8 +1,11 @@
 class mememaker:
 
     def __init__(self):
+        self.help_message = "mememaker - Creates a meme using the text provided"
+        self.usage_message = "Incorrect usage. Try follow : mememaker [template] [text]"
+        self.name = "mememaker"
+    def parse_args(self,string):
         pass
-        
-    def help(self):
-        message = "@JD mememaker [template] [text]+ - Creates a meme using the text provided"
-        return message
+    
+    def help_message(self):
+        return self.help_message
