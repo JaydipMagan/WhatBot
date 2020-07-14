@@ -87,6 +87,9 @@ class meme:
             count = 0
             submissions = orders[order]
             for submission in submissions:
+                if submission.over_18:
+                    return ("text","We don't do that here...Yet!")        
+                    
                 if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')):
                     fname = self.images_path + re.search('(?s:.*)\w/(.*)', submission.url).group(1)
                     if not os.path.isfile(fname):
@@ -96,7 +99,6 @@ class meme:
                             break
                     else:
                         return ("image",fname)
-                    
             if len(images):
                 if not os.path.exists(self.images_path):
                     os.makedirs(self.images_path)
