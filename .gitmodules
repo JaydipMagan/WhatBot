@@ -1,0 +1,3 @@
+[submodule "commands/mm"]
+	path = commands/mm
+	url = https://github.com/Hammad214508/Meme-maker.git
