@@ -17,7 +17,7 @@ class group:
         self.birth = self.find_birth(chrome)
         self.desc = self.find_desc(chrome)
         self.size = self.find_size(chrome)
-        self.prev_msg = 0
+        self.prev_msg_hash = 0
         close_button.click()
 
         # Create a parser object
@@ -79,36 +79,54 @@ class group:
         time.sleep(1)
         send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
         send_button.click()
+    
+    def send_msg_line_by(self,lines,chrome):
+        type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
+        actions = ActionChains(chrome) 
+        for line in lines:
+            type_field.send_keys(line)
+            actions.key_down(Keys.SHIFT)
+            actions.send_keys(Keys.ENTER)
+            actions.key_up(Keys.SHIFT)
+            actions.perform()
+        send_button = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[3]/button')
+        send_button.click()
         
     # read latest message of the current chat
     def read_latest_msg(self,chrome):
+        text = ""
+        msg_hash = self.prev_msg_hash
         try:
             msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
             msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
             msg_hash = hash(msg_span.text)
-            if msg_span.text[:3]=="@JD" and self.prev_msg!=msg_hash:
-                print("bot called")
-                cmd = msg_span.text.split()
-                final_cmd = " ".join(cmd[1:])
-                print(final_cmd)
-                if len(cmd)>1:
-                    try:
-                        action, content = self.parser.parse(final_cmd)
-                        if action=="text" or action=="error":
-                            self.send_msg(content,chrome)
-                        elif action=="image":
-                            self.send_img(content,chrome)
-                    except Exception as e:
-                        print(e)
-                        self.send_msg("oops something went wrong..",chrome)
-
-            if msg_span.text=="@all" and self.prev_msg!=msg_hash:
-                print("detected")
-                self.at_all(chrome)
-            self.prev_msg = msg_hash
-            return msg_hash
+            text = msg_span.text
         except:
-            pass
+            print("no message in")
+        if text[:3]=="@JD" and self.prev_msg_hash!=msg_hash:
+            print("bot called")
+            cmd = msg_span.text.split()
+            final_cmd = " ".join(cmd[1:])
+            print(final_cmd)
+            if len(cmd)>1:
+                try:
+                    action, content = self.parser.parse(final_cmd)
+                    if action=="text" or action=="error":
+                        self.send_msg(content,chrome)
+                    elif action=="help":
+                        self.send_msg_line_by(content,chrome)
+                    elif action=="image":
+                        self.send_img(content,chrome)
+                except Exception as e:
+                    print(e)
+                    self.send_msg("oops something went wrong..",chrome)
+
+        if text!="" and msg_span.text=="@all" and self.prev_msg_hash!=msg_hash:
+            print("detected")
+            self.at_all(chrome)
+        self.prev_msg_hash = msg_hash if text!="" else self.prev_msg_hash
+        return msg_hash
+
     # @ everyone in the group chat
     def at_all(self,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')

@@ -7,13 +7,14 @@ class help:
         self.name = "help"
         
     def generate_help_message(self,commands,names):
-        message = ""
+        message = []
         for name in names:
             obj = commands[name]
-            message += obj.help_message+"\n"
+            message.append(obj.help_message)
         return message
+    
     def parse_args(self,string,commands,names):
         if string=="":
-            return ("text",self.generate_help_message(commands,names))
+            return ("help",self.generate_help_message(commands,names))
         else:
             return ("error","Incorrect usage. Just try help.")

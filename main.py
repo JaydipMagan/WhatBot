@@ -9,7 +9,6 @@ from group import group
 import time
 import sys
 import argparse
-
 #Uses the search bar to find and open chat
 def open_chat(name):
     search_field = chrome.find_element_by_xpath('//*[@id="side"]/div[1]/div/label/div/div[2]')
