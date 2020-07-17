@@ -92,38 +92,27 @@ class group:
         send_button = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[3]/button')
         send_button.click()
         
-    # read latest message of the current chat
+    # read latest message of the current chat and perform action if any
     def read_latest_msg(self,chrome):
         text = ""
         msg_hash = self.prev_msg_hash
+        
         try:
             msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
             msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
             msg_hash = hash(msg_span.text)
             text = msg_span.text
         except:
-            print("no message in")
+            pass
+        
         if text[:3]=="@JD" and self.prev_msg_hash!=msg_hash:
             print("bot called")
-            cmd = msg_span.text.split()
-            final_cmd = " ".join(cmd[1:])
-            print(final_cmd)
-            if len(cmd)>1:
-                try:
-                    action, content = self.parser.parse(final_cmd)
-                    if action=="text" or action=="error":
-                        self.send_msg(content,chrome)
-                    elif action=="help":
-                        self.send_msg_line_by(content,chrome)
-                    elif action=="image":
-                        self.send_img(content,chrome)
-                except Exception as e:
-                    print(e)
-                    self.send_msg("oops something went wrong..",chrome)
-
+            self.perform_action(text,chrome)
+        
         if text!="" and msg_span.text=="@all" and self.prev_msg_hash!=msg_hash:
-            print("detected")
+            print("@all detected")
             self.at_all(chrome)
+        
         self.prev_msg_hash = msg_hash if text!="" else self.prev_msg_hash
         return msg_hash
 
@@ -137,3 +126,21 @@ class group:
             actions.send_keys(Keys.TAB)
         actions.perform()
         type_field.send_keys(Keys.ENTER)
+        
+    # perform action if any
+    def perform_action(self,text,chrome):
+        cmd = text.split()
+        final_cmd = " ".join(cmd[1:])
+        print(final_cmd)
+        if len(cmd)>1:
+            try:
+                action, content = self.parser.parse(final_cmd)
+                if action=="text" or action=="error":
+                    self.send_msg(content,chrome)
+                elif action=="help":
+                    self.send_msg_line_by(content,chrome)
+                elif action=="image":
+                    self.send_img(content,chrome)
+            except Exception as e:
+                print(e)
+                self.send_msg("oops something went wrong..",chrome)
