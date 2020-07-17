@@ -82,6 +82,7 @@ class group:
         
     # read latest message of the current chat
     def read_latest_msg(self,chrome):
+        try:
             msg_in = chrome.find_elements(By.CLASS_NAME,"message-in")[-1]
             msg_span = msg_in.find_element(By.CLASS_NAME,"eRacY")
             msg_hash = hash(msg_span.text)
@@ -97,16 +98,17 @@ class group:
                             self.send_msg(content,chrome)
                         elif action=="image":
                             self.send_img(content,chrome)
-                    except SyntaxError as e:
+                    except Exception as e:
                         print(e)
-                        self.send_msg(e,chrome)
+                        self.send_msg("oops something went wrong..",chrome)
 
             if msg_span.text=="@all" and self.prev_msg!=msg_hash:
                 print("detected")
                 self.at_all(chrome)
             self.prev_msg = msg_hash
             return msg_hash
-
+        except:
+            pass
     # @ everyone in the group chat
     def at_all(self,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
