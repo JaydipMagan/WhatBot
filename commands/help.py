@@ -2,15 +2,16 @@ from pathlib import Path
 import importlib
 class help:
     def __init__(self):
-        self.help_message = "help - Display all the available commands"
+        self.help_message = "Help - Display all the available commands"
         self.usage_message = "Try follow : help"
         self.name = "help"
         
     def generate_help_message(self,commands,names):
-        message = []
+        message = ["Here are all the commands:",""]
         for name in names:
             obj = commands[name]
             message.append(obj.help_message)
+        message+=["@all - send a @ to all the members","For more help with a particular command try command_name -h ","e.g. @Bot meme -h"]
         return message
     
     def parse_args(self,string,commands,names):

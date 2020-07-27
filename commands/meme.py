@@ -9,7 +9,7 @@ import random
 class meme:
     def __init__(self):
         self.help_message = "meme - Returns a meme from Reddit."
-        self.usage_message = "Try follow : meme [-s subreddit name] [-t time frame {h,d,w,m,a}] [-o order {top,new,hot}]"
+        self.usage_message = "Try follow : meme [subreddit name] [-t time frame {h,d,w,m,a}] [-o order {top,new,hot}]"
         self.name = "meme"
         
         config = configparser.ConfigParser()
@@ -34,8 +34,9 @@ class meme:
         if string=="":
             return self.random()
         parser = ArgumentParser.ArgumentParser()
+        pos_args = parser.add_argument_group("Positional arguments")
         opt_args = parser.add_argument_group("Optional arguments")
-        opt_args.add_argument('-s',"--subreddit",type=str,help="The subreddit you want to download the image from",required=False,default="memes")
+        pos_args.add_argument("subreddit",type=str,help="The subreddit you want to download the image from",default="memes")
         opt_args.add_argument('-a',"--amount",type=int,help="The amount of images you want to download",required=False,default=1)
         opt_args.add_argument('-t',"--time",type=str,help="Time frame",choices=["h","d","w","m","y"], required=False,default="h")
         opt_args.add_argument('-o',"--order",type=str,help="Order",choices=["new","top","hot"], required=False)
