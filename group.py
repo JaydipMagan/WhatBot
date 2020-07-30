@@ -82,13 +82,13 @@ class group:
     
     def send_msg_line_by(self,lines,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
-        actions = ActionChains(chrome) 
         for line in lines:
+            actions = ActionChains(chrome)
             type_field.send_keys(line)
-            actions.key_down(Keys.SHIFT)
-            actions.send_keys(Keys.ENTER)
-            actions.key_up(Keys.SHIFT)
-            actions.perform()
+            actions.key_down(
+                Keys.SHIFT
+            ).send_keys(Keys.ENTER).key_up(Keys.SHIFT).perform()
+            actions.reset_actions()
         send_button = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[3]/button')
         send_button.click()
         
