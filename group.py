@@ -81,17 +81,16 @@ class group:
         send_button.click()
         
     def send_img_text(self,image_path,text,chrome):
-        # TODO : fix the error with sending text to textfield
         attach = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div')
         attach.click()
 
         img_button = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/span/div/div/ul/li[1]/button/input')
         img_button.send_keys(os.path.abspath(image_path))
 
-        time.sleep(1)
+        time.sleep(0.5)
         
-        text = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div[1]/span/div/div[2]/div/div[3]/div[1]/div[2]')
-        text.send_keys(text)
+        text_field = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div[1]/span/div/div[2]/div/div[3]/div[1]/div[2]')
+        text_field.send_keys(text)
         
         send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
         send_button.click()
@@ -125,7 +124,7 @@ class group:
             print("bot called")
             self.perform_action(text,chrome)
         
-        if text!="" and msg_span.text=="@all" and self.prev_msg_hash!=msg_hash:
+        if text!="" and text=="@all" and self.prev_msg_hash!=msg_hash:
             print("@all detected")
             self.at_all(chrome)
         
@@ -160,7 +159,7 @@ class group:
                 elif action=="image":
                     self.send_img(contents["media_location"],chrome)
                 elif action=="image-text":
-                    self.send_img(contents["media_location"],chrome)
+                    self.send_img_text(contents["media_location"],contents["text"],chrome)
             except Exception as e:
                 print(e)
                 self.send_msg("oops something went wrong..",chrome)

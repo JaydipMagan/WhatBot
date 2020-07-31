@@ -75,11 +75,11 @@ class meme:
         print("Download complete")
         
     def get_link(self,submission):
-        if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')):
+        if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')) and not submission.over_18:
+            author_name = "u/"+submission.author.name if submission.comments else ""
             fname = self.images_path + re.search('(?s:.*)\w/(.*)', submission.url).group(1)
-            return {"url":submission.url,"fname":fname}
-                
-        
+            return {"url":submission.url,"fname":fname,"author":author_name}
+
     def get_image(self,order):
         images = []
         orders = {"top":self.reddit.subreddit(self.sub).top(time_filter=self.timeframe[self.time]),
@@ -93,35 +93,35 @@ class meme:
                     return {"media":"text","text":"We don't do that here...Yet!","media_location":""}
                     
                 if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')):
+                    author_name = "u/"+submission.author.name
                     fname = self.images_path + re.search('(?s:.*)\w/(.*)', submission.url).group(1)
-                    author_name = submission.comments[0].author.name
                     if not os.path.isfile(fname):
-                        images.append({'url':submission.url,'fname':fname})
+                        images.append({'url':submission.url,'fname':fname,'author':author_name})
                         count+=1
                         if count>=self.amount:
                             break
                     else:
-                        return {"media":"image-text","text":"u/"+author_name,"media_location":fname}
+                        return {"media":"image-text","text":author_name,"media_location":fname}
                     
             if len(images):
                 if not os.path.exists(self.images_path):
                     os.makedirs(self.images_path)
                 self.download_images(images)
-                return {"media":"image","text":"","media_location":fname}
+                return {"media":"image-text","text":images[0]['author'],"media_location":images[0]['fname']}
                     
         except Exception as e:
             print(e)
             return {"media":"error","text":e,"media_location":""}
         
     def random(self):
-        submissions = self.reddit.subreddit(self.sub).top(time_filter=self.timeframe[self.time])
+        submissions = self.reddit.subreddit(self.sub).top(time_filter=self.timeframe[self.time],limit=10)
         image_links = list(map(self.get_link,submissions))
         random_int = random.randint(0,len(image_links))
         image = image_links[random_int]
         if not os.path.exists(self.images_path):
             os.makedirs(self.images_path)
         self.download_image(image)
-        return {"media":"image","text":"","media_location":image["fname"]}
+        return {"media":"image-text","text":image["author"],"media_location":image["fname"]}
     
     def top(self):
         return self.get_image("top")    

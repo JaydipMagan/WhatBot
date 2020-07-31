@@ -33,7 +33,7 @@ class parser:
     def parse(self,string):
         args = string.split()
         if args[0] not in self.vaild_command_names:
-            return ("error",args[0]+" is not a valid command. Use help to find out the valid commands.")
+            return {"media":"error","text":args[0]+" is not a valid command. Use help to find out the valid commands.","media_location":""}
         else:
             obj = self.commands[args[0]]
             cmd = " ".join(args[1:])
