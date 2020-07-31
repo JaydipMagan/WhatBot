@@ -40,7 +40,7 @@ To run the bot give the name of the group chat the --cache flag. Cache will just
 try use the existing user profile on chrome so you don't have to keep scanning the QR code.
 Example :
 
-`python3 main.py name="group name" -c`
+`python3 main.py "group name" -c`
 
 Deactivate the virtual enviroment after running bot just run :
 
