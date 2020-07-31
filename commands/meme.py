@@ -44,8 +44,8 @@ class meme:
         try:
             args = parser.parse_args(string.split())
         except SystemExit as e:
-            print(e)
-            return ("error",self.usage_message)
+            # print(e)
+            return {"media":"error","text":self.usage_message,"media_location":""}
         
         self.sub = args.subreddit
         self.amount = args.amount
@@ -72,7 +72,8 @@ class meme:
         r = requests.get(image['url'])
         with open(image['fname'],'wb') as f:
             f.write(r.content)
-
+        print("Download complete")
+        
     def get_link(self,submission):
         if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')):
             fname = self.images_path + re.search('(?s:.*)\w/(.*)', submission.url).group(1)
@@ -89,26 +90,28 @@ class meme:
             submissions = orders[order]
             for submission in submissions:
                 if submission.over_18:
-                    return ("text","We don't do that here...Yet!")        
+                    return {"media":"text","text":"We don't do that here...Yet!","media_location":""}
                     
                 if not submission.stickied and submission.url.endswith(('jpg', 'jpeg', 'png')):
                     fname = self.images_path + re.search('(?s:.*)\w/(.*)', submission.url).group(1)
+                    author_name = submission.comments[0].author.name
                     if not os.path.isfile(fname):
                         images.append({'url':submission.url,'fname':fname})
                         count+=1
                         if count>=self.amount:
                             break
                     else:
-                        return ("image",fname)
+                        return {"media":"image-text","text":"u/"+author_name,"media_location":fname}
+                    
             if len(images):
                 if not os.path.exists(self.images_path):
                     os.makedirs(self.images_path)
                 self.download_images(images)
-                return ("image",fname)
+                return {"media":"image","text":"","media_location":fname}
                     
         except Exception as e:
             print(e)
-            return ("error",e)
+            return {"media":"error","text":e,"media_location":""}
         
     def random(self):
         submissions = self.reddit.subreddit(self.sub).top(time_filter=self.timeframe[self.time])
@@ -118,7 +121,7 @@ class meme:
         if not os.path.exists(self.images_path):
             os.makedirs(self.images_path)
         self.download_image(image)
-        return ("image",image["fname"])
+        return {"media":"image","text":"","media_location":image["fname"]}
     
     def top(self):
         return self.get_image("top")    

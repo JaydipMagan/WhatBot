@@ -79,7 +79,23 @@ class group:
         time.sleep(1)
         send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
         send_button.click()
-    
+        
+    def send_img_text(self,image_path,text,chrome):
+        # TODO : fix the error with sending text to textfield
+        attach = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div')
+        attach.click()
+
+        img_button = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/span/div/div/ul/li[1]/button/input')
+        img_button.send_keys(os.path.abspath(image_path))
+
+        time.sleep(1)
+        
+        text = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div[1]/span/div/div[2]/div/div[3]/div[1]/div[2]')
+        text.send_keys(text)
+        
+        send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
+        send_button.click()
+        
     def send_msg_line_by(self,lines,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
         for line in lines:
@@ -134,13 +150,17 @@ class group:
         print(final_cmd)
         if len(cmd)>1:
             try:
-                action, content = self.parser.parse(final_cmd)
+                contents = self.parser.parse(final_cmd)
+                action = contents["media"]
+                content = contents["text"]
                 if action=="text" or action=="error":
                     self.send_msg(content,chrome)
                 elif action=="help":
                     self.send_msg_line_by(content,chrome)
                 elif action=="image":
-                    self.send_img(content,chrome)
+                    self.send_img(contents["media_location"],chrome)
+                elif action=="image-text":
+                    self.send_img(contents["media_location"],chrome)
             except Exception as e:
                 print(e)
                 self.send_msg("oops something went wrong..",chrome)

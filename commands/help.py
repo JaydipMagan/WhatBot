@@ -16,6 +16,6 @@ class help:
     
     def parse_args(self,string,commands,names):
         if string=="":
-            return ("help",self.generate_help_message(commands,names))
+            return {"media":"help","text":self.generate_help_message(commands,names),"media_location":""}
         else:
-            return ("error","Incorrect usage. Just try help.")
+            return {"media":"error","text":"Incorrect usage. Just try help.","media_location":""}
