@@ -20,29 +20,35 @@ Extract the driver into this directory.
 
 # How to run
 
-Please create a virtual enviroment : 
+1.Create a virtual enviroment : 
 
 `python3 -m venv whatbot_env`
 
-Activate the virtual enviroment :
+2.Activate the virtual enviroment :
 
 `source whatbot_env/bin/activate`
 
-You must have chromedriver in the same directory as main.py.
+3.You must have chromedriver in the same directory as main.py. Make sure it is called `chromedriver`
 
-Install the python packages using the requirements file:
+4.Install the python packages using the requirements file:
 
 `pip3 install -r requirements.txt`
 
-Please put your reddit app client id and client secret in the `conf.ini` file.
+5.Please put your reddit app client id and client secret in the `conf.ini` file. Use the link below to create a new one.
 
-To run the bot give the name of the group chat the --cache flag. Cache will just 
+`https://old.reddit.com/prefs/apps/`
+
+6.Run the bot give the name of the group chat the --cache flag. Cache will just 
 try use the existing user profile on chrome so you don't have to keep scanning the QR code.
 Example :
 
 `python3 main.py "group name" -c`
 
-Deactivate the virtual enviroment after running bot just run :
+You can specify your OS using the -s flag by default it is linux.
+
+`python main.py "group name" -c -s mac`
+
+7.Deactivate the virtual enviroment after running bot just run :
 
 `deactivate`
 

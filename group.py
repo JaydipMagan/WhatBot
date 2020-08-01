@@ -118,7 +118,7 @@ class group:
             msg_hash = hash(msg_span.text)
             text = msg_span.text
         except:
-            pass
+            print("can't read message")
         
         if text[:3]=="@JD" and self.prev_msg_hash!=msg_hash:
             print("bot called")

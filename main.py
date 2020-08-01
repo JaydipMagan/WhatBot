@@ -9,6 +9,13 @@ from group import group
 import time
 import sys
 import argparse
+import signal
+
+def signal_handler(sig, frame):
+    print('Exiting nicely!')
+    chrome.close()
+    exit()
+    
 #Uses the search bar to find and open chat
 def open_chat(name):
     search_field = chrome.find_element_by_xpath('//*[@id="side"]/div[1]/div/label/div/div[2]')
@@ -43,9 +50,11 @@ def send_msg(message,group_name):
 def setup_args_parser(parser):
     parser.add_argument("name",type=str,help="The name of the group chat the bot will run on")
     parser.add_argument("-c","--cache",action="store_true",help = "Use browser cache to stop having to scan QR code more than once")
+    parser.add_argument("-s","--system",type=str,choices=["windows","mac","linux"],default="linux",help = "What OS is being used")
     return parser
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
     arg_parser = argparse.ArgumentParser()
     arg_parser = setup_args_parser(arg_parser)
     args = arg_parser.parse_args()
@@ -53,15 +62,15 @@ if __name__ == "__main__":
     # construct paths 
     user = getuser()
     local_path = path.abspath(getcwd())
-    driver_path = local_path+"/chromedriver" 
-    chrome_profile_linux = '/home/{}/.config/google-chrome/default'.format(user)
-    chrome_profile_mac = '/Users/{}/Library/Application Support/Google/Chrome/Default'.format(user)
-    # chrome_profile_win = 'C:\Users\{}\AppData\Local\Google\Chrome\User Data\Default'.format(user)
+    driver_path = local_path+"/chromedriver" if args.system!="windows" else local_path+"\chromedriver.exe"
+    chrome_profiles = {"linux":'/home/{}/.config/google-chrome/default'.format(user),
+                       "mac":'/Users/{}/Library/Application Support/Google/Chrome/Default'.format(user),
+                       "windows":'C:\\Users\\{}\\AppData\\Local\\Google\\Chrome\\User Data\\Default'.format(user)}
 
     # Set options and use cache of the chrome browser
     options = webdriver.ChromeOptions()
     if args.cache:
-        options.add_argument('--user-data-dir='+chrome_profile_linux)
+        options.add_argument('--user-data-dir='+chrome_profiles[args.system])
         options.add_argument('--profile-directory=Default')
 
     # open chrome and whatsapp
@@ -75,7 +84,5 @@ if __name__ == "__main__":
     open_chat(group_name)
     group = group(group_name,chrome)
     print(group.name,group.birth,group.desc,group.size)
-    stop = False    
-    while not stop:
+    while True:
         group.read_latest_msg(chrome)
-    chrome.close()
