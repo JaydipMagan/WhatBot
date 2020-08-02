@@ -11,9 +11,12 @@ import sys
 import argparse
 import signal
 
+stop = False
 def signal_handler(sig, frame):
     print('Exiting nicely!')
-    chrome.close()
+    global stop
+    stop = True
+    chrome.quit()
     exit()
     
 #Uses the search bar to find and open chat
@@ -84,5 +87,5 @@ if __name__ == "__main__":
     open_chat(group_name)
     group = group(group_name,chrome)
     print(group.name,group.birth,group.desc,group.size)
-    while True:
+    while not stop:
         group.read_latest_msg(chrome)

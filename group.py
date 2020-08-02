@@ -56,9 +56,9 @@ class group:
         return names
 
     # send a message to group chat, chat must be open already
-    def send_msg(self,message,chrome):
+    def send_msg(self,contents,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
-        type_field.send_keys(message)
+        type_field.send_keys(contents["text"])
 
         send_button = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[3]/button')
         send_button.click()
@@ -69,35 +69,35 @@ class group:
             msg_span = msg.find_element(By.CLASS_NAME,"eRacY")
             print(msg_span.text)
 
-    def send_img(self,image_path,chrome):
+    def send_img(self,contents,chrome):
         attach = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div')
         attach.click()
 
         img_button = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/span/div/div/ul/li[1]/button/input')
-        img_button.send_keys(os.path.abspath(image_path))
+        img_button.send_keys(os.path.abspath(contents["media_location"]))
         
         time.sleep(1)
         send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
         send_button.click()
         
-    def send_img_text(self,image_path,text,chrome):
+    def send_img_text(self,contents,chrome):
         attach = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div')
         attach.click()
 
         img_button = chrome.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/span/div/div/ul/li[1]/button/input')
-        img_button.send_keys(os.path.abspath(image_path))
+        img_button.send_keys(os.path.abspath(contents["media_location"]))
 
         time.sleep(0.5)
-        
+        print(contents["text"])
         text_field = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div[1]/span/div/div[2]/div/div[3]/div[1]/div[2]')
-        text_field.send_keys(text)
+        text_field.send_keys(contents["text"])
         
         send_button = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div')
         send_button.click()
         
-    def send_msg_line_by(self,lines,chrome):
+    def send_msg_line_by(self,contents,chrome):
         type_field = chrome.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')
-        for line in lines:
+        for line in contents["text"]:
             actions = ActionChains(chrome)
             type_field.send_keys(line)
             actions.key_down(
@@ -144,22 +144,18 @@ class group:
         
     # perform action if any
     def perform_action(self,text,chrome):
+        actions = {"text":self.send_msg,
+                   "error":self.send_msg,
+                   "help":self.send_msg_line_by,
+                   "image":self.send_img,
+                   "image-text":self.send_img_text}
         cmd = text.split()
         final_cmd = " ".join(cmd[1:])
         print(final_cmd)
         if len(cmd)>1:
             try:
                 contents = self.parser.parse(final_cmd)
-                action = contents["media"]
-                content = contents["text"]
-                if action=="text" or action=="error":
-                    self.send_msg(content,chrome)
-                elif action=="help":
-                    self.send_msg_line_by(content,chrome)
-                elif action=="image":
-                    self.send_img(contents["media_location"],chrome)
-                elif action=="image-text":
-                    self.send_img_text(contents["media_location"],contents["text"],chrome)
+                actions[contents["media"]](contents,chrome)
             except Exception as e:
                 print(e)
-                self.send_msg("oops something went wrong..",chrome)
+                self.send_msg({"text":"oops something went wrong.."},chrome)
