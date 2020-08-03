@@ -88,7 +88,6 @@ class group:
         img_button.send_keys(os.path.abspath(contents["media_location"]))
 
         time.sleep(0.5)
-        print(contents["text"])
         text_field = chrome.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div[1]/span/div/div[2]/div/div[3]/div[1]/div[2]')
         text_field.send_keys(contents["text"])
         
