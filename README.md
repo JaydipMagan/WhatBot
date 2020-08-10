@@ -68,3 +68,7 @@ Developing a bot which runs on android
 Hosting the bot on a web server for 24/7 availability
 
 Website to easily configure the bot
+
+# Disclaimer
+
+This project is in no way affiliated with, authorized, maintained, sponsored or endorsed by WhatsApp or any of its affiliates or subsidiaries. This is an independent and unofficial software. Use at your own risk.
