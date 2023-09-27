@@ -4,7 +4,7 @@ idna==2.10
 Pillow==9.3.0
 praw==7.1.0
 prawcore==1.4.0
-requests==2.24.0
+requests==2.31.0
 selenium==3.141.0
 six==1.15.0
 update-checker==0.17
